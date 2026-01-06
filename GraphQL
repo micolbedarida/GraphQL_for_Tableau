@@ -1,5 +1,5 @@
 query getFields2 {
-tableauUsers (filter: {name: "Alex Lewis"}) {
+tableauUsers (filter: {name: "First Last"}) {
 name
 ownedWorkbooks {
 id
