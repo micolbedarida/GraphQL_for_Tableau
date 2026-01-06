@@ -1,0 +1,12 @@
+The aim of this project was to create a Tableau dashboard that contains a list of fields used in reports on the Tableau server by a certain user.
+
+Go to https://prd-tableau.corpuk.net/metadata/graphiql and run the GraphQL script in the GraphQL file. You will then need to parse the data into a csv that can be ingested by Tableau. I did this with the Python script saved as Python_parsing.
+
+Limitations:
+- Fields which have manually been renamed in Tableau (eg 'recharge date' to 'purchase date') appear as the new name rather than the remote name
+- A field appearing as Is hidden - false on the report does not necessarily mean it is being used in the report. Deleting the field upstream may not have any negative consequences. This needs to be investigated by manually going into the relevant reports listed on the dashboard
+
+'IsHidden' - refers to whether the field is hidden or not in the Tableau workbook
+'Datasource' - this is each individual data source within a workbook. Null for Datasource type objects
+Downstream fields - these are the fields within the workbook / datasource which contain a calulation referencing the given field name
+The script is currently designed to retrieve data for only one owner.
