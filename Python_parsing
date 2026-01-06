@@ -1,0 +1,69 @@
+import pandas as pd
+import json
+file = r'json_file_path' # change this file name as required
+# Read JSON file
+
+with open(file, 'r') as file:
+    data = json.load(file)
+
+server_data = []
+
+for user in data['data']['tableauUsers']:
+    user_name = user['name']
+    
+    # Extract workbook data
+    for workbook in user['ownedWorkbooks']:
+        workbook_id = workbook['id']
+        workbook_name = workbook['name']
+        project_name = workbook['projectName']
+        embedded_datasources = workbook['embeddedDatasources']
+        
+        for datasource in embedded_datasources:
+            datasource_name = datasource['name']
+            fields = datasource['fields']
+            
+            for field in fields:
+                field_name = field['name']
+                is_hidden = field['isHidden']
+                downstream_fields = [downstream_field['name'] for downstream_field in field['downstreamFields']]
+                
+                server_data.append({
+                    'User': user_name,
+                    'Type': 'Workbook',
+                    'ID': workbook_id,
+                    'Name': workbook_name,
+                    'Project': project_name,
+                    'Datasource': datasource_name,
+                    'Field Name': field_name,
+                    'Is Hidden': is_hidden,
+                    'Downstream Fields': downstream_fields
+                })
+
+# Extract datasource data
+for datasource in user['ownedDatasources']:
+    datasource_id = datasource['id']
+    datasource_name = datasource['name']
+    project_name = datasource['projectName']
+    fields = datasource['fields']
+    
+    for field in fields:
+        field_name = field['name']
+        is_hidden = field['isHidden']
+        downstream_fields = [downstream_field['name'] for downstream_field in field['downstreamFields']]
+        
+        server_data.append({
+            'User': user_name,
+            'Type': 'Datasource',
+            'Workbook ID': datasource_id,
+            'Project': project_name,
+            'Name': datasource_name,
+            'Field Name': field_name,
+            'Is Hidden': is_hidden,
+            'Downstream Fields': downstream_fields
+        })
+
+# Create DataFrame
+df = pd.DataFrame(server_data)
+
+# Export DataFrame to CSV
+df.to_csv(r'output_file_path', index=False) # change this file destination as required
